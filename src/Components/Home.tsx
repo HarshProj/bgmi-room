@@ -17,8 +17,6 @@ export const Home = () => {
     const [selectedSlot, setSelectedSlot] = useState('');
     const [processing, setProcessing] = useState(false);
     const backend_url=import.meta.env.VITE_API_URL;
-    console.log("Backend URL:", backend_url);
-    console.log("All env:", import.meta.env);
 
     useEffect(() => {
       const handleResize = () => setWindowWidth(window.innerWidth);
