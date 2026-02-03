@@ -16,7 +16,8 @@ export const Home = () => {
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
     const [selectedSlot, setSelectedSlot] = useState('');
     const [processing, setProcessing] = useState(false);
-    
+    const backend_url=import.meta.env.VITE_API_URL;
+
     useEffect(() => {
       const handleResize = () => setWindowWidth(window.innerWidth);
       window.addEventListener('resize', handleResize);
@@ -35,7 +36,7 @@ export const Home = () => {
          
         // PRODUCTION CODE - Uncomment when you have backend setup:
         
-        const response = await fetch('http://localhost:3000/create-checkout-session', {
+        const response = await fetch(`${backend_url}/create-checkout-session`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ 
@@ -62,7 +63,7 @@ export const Home = () => {
       }
     };
     const getallrooms=async()=>{
-      fetch('http://localhost:3000/api/room/all-rooms', {
+      fetch(`${backend_url}/api/room/all-rooms`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
       })
