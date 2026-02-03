@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import bgmithumbnail from '../assets/bgmi-thumbnail.jpg'
 
@@ -16,6 +15,7 @@ export const Home = () => {
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
     const [selectedSlot, setSelectedSlot] = useState('');
     const [processing, setProcessing] = useState(false);
+    const [loadingRooms, setLoadingRooms] = useState(false);
     const backend_url=import.meta.env.VITE_API_URL;
 
     useEffect(() => {
@@ -62,20 +62,25 @@ export const Home = () => {
         setProcessing(false);
       }
     };
+    
     const getallrooms=async()=>{
-      fetch(`${backend_url}/api/room/all-rooms`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-      })
-      .then(response => response.json())
-      .then(data => {
+      setLoadingRooms(true);
+      try {
+        const response = await fetch(`${backend_url}/api/room/all-rooms`, {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+        });
+        const data = await response.json();
         console.log('All Bookings:', data);
         setAllRooms(data);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error('Error:', error);
-      });
+        alert('Failed to load rooms. Please try again.');
+      } finally {
+        setLoadingRooms(false);
+      }
     }
+    
     return (
       <div 
         className="h-screen w-full flex items-center justify-end pr-4 sm:pr-8 md:pr-12 lg:pr-16 overflow-auto bg-slate-300"
@@ -87,7 +92,7 @@ export const Home = () => {
         }}
       >
         <button
-          onClick={() => {setShowBookingModal(true), getallrooms()}}
+          onClick={() => {setShowBookingModal(true); getallrooms()}}
           className="relative z-10 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-bold text-base sm:text-lg md:text-xl px-6 py-3 sm:px-8 sm:py-4 rounded-lg shadow-2xl transform transition-all duration-300 hover:scale-110 hover:shadow-orange-500/50"
         >
           BOOK SLOTS
@@ -100,49 +105,55 @@ export const Home = () => {
               <p className="mb-6 text-sm sm:text-base text-gray-300">Select your preferred time slot and proceed to payment.</p>
               
               <div className="space-y-3 sm:space-y-4 mb-6">
-                {allRooms.map((val:Room)=>{
-                  return(
-                    <button 
-                    onClick={() => handleSlotSelection('Morning (9 AM - 12 PM)')}
-                    disabled={processing}
-                    className="
-                      w-full 
-                      bg-gray-800 
-                      hover:bg-gray-700 
-                      text-white 
-                      rounded-lg 
-                      transition-colors 
-                      text-sm sm:text-base 
-                      disabled:opacity-50 
-                      cursor-pointer
-                    "
-                  >
-                    <div className="w-full h-full rounded-lg space-y-3 p-4">
-                      <p className="text-lg">
-                        <span className="font-bold text-orange-400">Room:</span>{" "}
-                        {val.roomName}
-                      </p>
-                  
-                      <div className="flex justify-between gap-2">
-                        <p className="text-sm sm:text-base">
-                          <span className="font-semibold text-orange-400">Booked Slots:</span>{" "}
-                          {val.occupiedSlots?.toString()}
-                        </p>
-                        <p className="text-sm sm:text-base text-right">
-                          <span className="font-semibold text-orange-400">Available Slots:</span>{" "}
-                          {val.roomSlots?.toString()}
-                        </p>
-                      </div>
-                    </div>
-                  </button>
-                  
-                  )
-                })}
-               
-                  {/* <span>Morning (9 AM - 12 PM)</span>
-                  <span className="text-orange-500 font-semibold">₹100</span>
-                </button> */}
-                
+                {loadingRooms ? (
+                  <div className="flex flex-col items-center justify-center py-8">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mb-4"></div>
+                    <p className="text-gray-400">Loading rooms...</p>
+                  </div>
+                ) : allRooms.length === 0 ? (
+                  <div className="text-center py-8 text-gray-400">
+                    No rooms available at the moment.
+                  </div>
+                ) : (
+                  allRooms.map((val:Room, index)=>{
+                    return(
+                      <button 
+                        key={index}
+                        onClick={() => handleSlotSelection('Morning (9 AM - 12 PM)')}
+                        disabled={processing}
+                        className="
+                          w-full 
+                          bg-gray-800 
+                          hover:bg-gray-700 
+                          text-white 
+                          rounded-lg 
+                          transition-colors 
+                          text-sm sm:text-base 
+                          disabled:opacity-50 
+                          cursor-pointer
+                        "
+                      >
+                        <div className="w-full h-full rounded-lg space-y-3 p-4">
+                          <p className="text-lg">
+                            <span className="font-bold text-orange-400">Room:</span>{" "}
+                            {val.roomName}
+                          </p>
+                      
+                          <div className="flex justify-between gap-2">
+                            <p className="text-sm sm:text-base">
+                              <span className="font-semibold text-orange-400">Booked Slots:</span>{" "}
+                              {val.occupiedSlots?.toString()}
+                            </p>
+                            <p className="text-sm sm:text-base text-right">
+                              <span className="font-semibold text-orange-400">Available Slots:</span>{" "}
+                              {val.roomSlots?.toString()}
+                            </p>
+                          </div>
+                        </div>
+                      </button>
+                    )
+                  })
+                )}
               </div>
   
               {processing && (
