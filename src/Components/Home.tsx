@@ -30,7 +30,7 @@ export const Home = () => {
   
       try {
         // Demo: Since we don't have a backend, show a demo payment form
-        alert(`Selected slot: ${slot}\n\nIn production, this would redirect to Stripe payment for ₹100.\n\nTo implement:\n1. Get Stripe API keys from stripe.com\n2. Create a backend endpoint\n3. Use the code below`);
+        // alert(`Selected slot: ${slot}\n\nIn production, this would redirect to Stripe payment for ₹100.\n\nTo implement:\n1. Get Stripe API keys from stripe.com\n2. Create a backend endpoint\n3. Use the code below`);
         
          
         // PRODUCTION CODE - Uncomment when you have backend setup:

@@ -12,7 +12,7 @@ db();
 app.get('/', (req, res) => {
     res.send('Hello, BGMI Room Backend is running!');
 });
-
+ 
 app.post('/create-checkout-session', async (req, res) => {
   try {
     const { slot } = req.body;
@@ -46,6 +46,7 @@ app.post('/create-checkout-session', async (req, res) => {
   }
 });
 app.use("/api/room", require("./Routes/Room"));
+app.use("/api/auth", require("./Routes/Admin"));
 app.listen(3000, () => {
     console.log('Server is running on port 3000');
 });

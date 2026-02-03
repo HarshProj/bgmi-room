@@ -2,10 +2,11 @@ const express = require('express');
 const router = express.Router();
 const Room = require('../Model/Room');
 // const bcrypt = require('bcryptjs');
-const jwt=require('jsonwebtoken')
+const jwt=require('jsonwebtoken');
+const authorization = require('../Middleware/Authorization');
 const JWT_SECRET="HARSHHERE"
 // Create a new room
-router.post('/create', async (req, res) => {
+router.post('/create',authorization, async (req, res) => {
     try {
         const { roomName, capacity,freeSlots,password} = req.body;
         // const hashedpwd= await bcrypt.hash(password,10);
