@@ -1,7 +1,6 @@
-import React from 'react'
+
 import { useEffect, useState } from 'react';
 import bgmithumbnail from '../assets/bgmi-thumbnail.jpg'
-import { loadStripe } from '@stripe/stripe-js';
 
 interface Room {
   roomName: String;
@@ -26,6 +25,7 @@ export const Home = () => {
   
     const handleSlotSelection = async (slot: string) => {
       setSelectedSlot(slot);
+      console.log('Selected slot:', selectedSlot);
       setProcessing(true);
   
       try {
